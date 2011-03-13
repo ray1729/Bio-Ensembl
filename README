@@ -1,0 +1,21 @@
+# bio.ensembl
+
+This is the very experimental beginnings of a Clojure API for
+accessing Ensembl databases. There is a long way to go before this
+will be useful to anyone.
+
+See also <http://www.ensembl.org/info/docs/api/core/index.html>.
+
+## Usage
+
+FIXME: write
+
+## Installation
+
+FIXME: write
+
+## License
+
+Copyright (C) 2011 Ray Miller <ray@1729.org.uk>
+
+Distributed under the Eclipse Public License, the same as Clojure.
