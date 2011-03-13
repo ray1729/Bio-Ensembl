@@ -1,5 +1,9 @@
 (ns ray1729.bio.ensembl.core
-  (:use [clojureql.core]))
+  (:refer-clojure
+   :exclude [take drop sort distinct conj! disj! compile case])
+  (:use
+   [clojure.contrib.sql :only (with-connection)]
+   [clojureql.core]))
 
 (def *ensembldb-host* "ensembldb.ensembl.org")
 (def *ensembldb-port* 5306)
@@ -53,6 +57,6 @@
                    (distinct))]
     (union query1 query2)))
 
-;; XXX Throws exception "No value specified for parameter 6"
-;; (with-cnx mousedb @(fetch-gene-by-external-name "Cbx1"))
+;; XXX Throws exception "No value specified for parameter 7"
+;; (with-connection mousedb @(fetch-gene-by-external-name "Cbx1"))
 
