@@ -3,33 +3,79 @@
   (:import [uk.ac.roslin.ensembl.dao.database DBRegistry]))
 
 (def ^:dynamic *registry* nil)
-(def ^:dynamic *species* nil)
 
 (defmacro with-registry
   [registry & body]
   `(binding [*registry* ~registry] ~@body))
 
-(defmacro with-species
-  [species & body]
-  `(binding [*species* ~species] ~@body))
+(defn set-registry!
+  [registry]
+  (alter-var-root #'*registry*
+                  (constantly registry)
+                  (when (thread-bound? #'*registry*)
+                    (set! *registry* registry))))
 
 (defn registry
   [ds]
   (DBRegistry. (data-source ds)))
 
+(defn- list-species-transform
+  [style]
+  (get {:binomial (memfn getSpeciesBinomial)
+        :common   (memfn getCommonName)
+        :compara  (memfn getComparaName)
+        :database (memfn getDatabaseStyleName)
+        :display  (memfn getDisplayName)
+        :short    (memfn getShortName)}
+       style
+       identity))
+
 (defn list-species
-  [& {:keys [registry] :or {registry *registry*}}]
-  (map (memfn getDatabaseStyleName) (.getSpecies registry)))
+  [& [style]]
+  (map (list-species-transform style) (.getSpecies *registry*)))
 
 (defn species
-  [s & {:keys [registry] :or {registry *registry*}}]
-  (or (.getSpeciesByEnsemblName registry (name s))
-      (.getSpeciesByAlias registry (name s))))
+  [species-name]
+  (or (.getSpeciesByEnsemblName *registry* (name species-name))
+      (.getSpeciesByAlias *registry* (name species-name))))
 
 (defn list-chromosomes
-  [s]
-  (map key (.getChromosomes s)))
+  [species-name]
+  (map #(.getChromosomeName %) (vals (.getChromosomes (species species-name)))))
 
 (defn chromosome
-  [n & {:keys [species] :or {species *species*}}]
-  (.getChromosomeByName (ensembl.core/species species) n))
+  [species-name chromosome-name]
+  (.getChromosomeByName (species species-name) chromosome-name))
+
+(defn genes-on-region
+  ([species-name chromosome-name begin end]
+     (genes-on-region (chromosome species-name chromosome-name) begin end))
+  ([chromosome begin end]
+     (.getGenesOnRegion chromosome (Integer. begin) (Integer. end))))
+
+(defn gene
+  [species-name gene-stable-id]
+  (.getGeneByStableID (species species-name) gene-stable-id))
+
+(comment
+
+  (def ensreg (registry :ensembldb))
+
+  (with-registry ensreg
+    (list-species)
+    (chromosome "human" "20")
+    (gene "human" "ENSG00000153551"))
+
+  (set-registry! ensreg)
+
+  (list-species)
+
+  (chromosome "human" "20")
+
+  (list-chromosomes "human")
+
+  (genes-on-region "human" "chr20" 1 100000)
+
+  (genes-on-region (chromoosme "human" "20" 1 100000))
+
+  )

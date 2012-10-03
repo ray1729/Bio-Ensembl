@@ -15,14 +15,26 @@ have suggestions for how the API should shape up.
  
     (def ensreg (registry :ensembldb))
 
-    (def human (species "human" :registry ensreg)
-
-or
-
     (with-registry ensreg
-      (def human (species "human")))
+      (list-species)
+      (chromosome "human" "20")
+      (gene "human" "ENSG00000153551"))
 
-    (list-chromosomes human)
+Alternatively, set the registry for your session:
+      
+    (set-registry! ensreg)
+
+    (list-species)
+
+    (list-species :binomial)
+
+    (chromosome "human" "20")
+
+    (list-chromosomes "human")
+
+    (genes-on-region "human" "chr20" 1 100000)
+
+    (genes-on-region (chromoosme "human" "20" 1 100000))
 
 ## License
 
