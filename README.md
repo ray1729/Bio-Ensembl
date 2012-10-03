@@ -11,18 +11,18 @@ have suggestions for how the API should shape up.
 
 ## Usage
 
- (use 'ensembl.core)
+    (use 'ensembl.core)
  
- (def ensreg (registry :ensembldb))
+    (def ensreg (registry :ensembldb))
 
- (def human (species "human" :registry ensreg)
+    (def human (species "human" :registry ensreg)
 
 or
 
- (with-registry ensreg
-    (def human (species "human")))
+    (with-registry ensreg
+      (def human (species "human")))
 
- (list-chromosomes human)
+    (list-chromosomes human)
 
 ## License
 
