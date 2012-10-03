@@ -34,7 +34,7 @@ Alternatively, set the registry for your session:
 
     (genes-on-region "human" "chr20" 1 100000)
 
-    (genes-on-region (chromoosme "human" "20") 1 100000)
+    (genes-on-region (chromosome "human" "20") 1 100000)
 
 ## License
 
