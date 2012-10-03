@@ -32,7 +32,7 @@ Alternatively, set the registry for your session:
 
     (list-chromosomes "human")
 
-    (genes-on-region "human" "chr20" 1 100000)
+    (genes-on-region "human" "20" 1 100000)
 
     (genes-on-region (chromosome "human" "20") 1 100000)
 
